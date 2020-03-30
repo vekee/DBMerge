@@ -1,33 +1,41 @@
 package jp.co.apasys.table;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import jp.co.apasys.utils.FileUtils;
 
 public class MergeTableCollector {
-	private static String outputBaseFileDirString = "./config";
-	static Iterator<String> tableIterator = null;
-	
-	public MergeTableCollector() {
-		readMergeTable ();
+    private static String outputBaseFileDirString = "./config";
+    static Iterator<String> tableIterator = null;
+
+    public MergeTableCollector() {
+	readMergeTable();
+    }
+
+    private void readMergeTable() {
+	List<String> mergeTableFileList = new ArrayList<String>();
+	try {
+	    mergeTableFileList = FileUtils
+		    .readFileAllLines(outputBaseFileDirString);
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
-	
-	private void readMergeTable () {
-		List<String> mergeTableFileList = FileUtils.readFileAllLines(outputBaseFileDirString);
-		tableIterator = mergeTableFileList.iterator();
+	tableIterator = mergeTableFileList.iterator();
+    }
+
+    public static String next() {
+	String mergeTableFile = "";
+	if (tableIterator.hasNext()) {
+	    mergeTableFile = tableIterator.next();
 	}
-	
-	public static String next() {
-		String mergeTableFile = "";
-		if (tableIterator.hasNext()) {
-			mergeTableFile = tableIterator.next();
-		}
-		
-		return mergeTableFile;
-	}
-	
-	public static boolean hasNext() {
-		return tableIterator.hasNext();
-	}
+
+	return mergeTableFile;
+    }
+
+    public static boolean hasNext() {
+	return tableIterator.hasNext();
+    }
 }
