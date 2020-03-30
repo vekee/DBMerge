@@ -16,7 +16,6 @@ public class MergeThread extends Thread {
 	private Integer hashValue = 1;
 	private MergeTableInfo mergeTableInfo = null;
 	private LoggerUtil loggerUtil = null;
-	private DBUtils dbUtils = null;
 	private BufferedWriter newOnlyBufferedWriter = null;
 	private BufferedWriter oldOnlyBufferedWriter = null;
 	private BufferedWriter diffColumnBufferedWriter = null;
@@ -44,12 +43,6 @@ public class MergeThread extends Thread {
 	}
 	public void setLoggerUtil(LoggerUtil loggerUtil) {
 		this.loggerUtil = loggerUtil;
-	}
-	public DBUtils getDbUtils() {
-		return dbUtils;
-	}
-	public void setDbUtils(DBUtils dbUtils) {
-		this.dbUtils = dbUtils;
 	}
 	public BufferedWriter getNewOnlyBufferedWriter() {
 		return newOnlyBufferedWriter;
@@ -95,10 +88,29 @@ public class MergeThread extends Thread {
 		StringBuilder oldKeyValues = new StringBuilder();
 		String newColumnValue = "";
 		String oldColumnValue = "";
+
+                DBUtils dbUtils = new DBUtils();
+                dbUtils.initDBConn();
 		
 		newRs = dbUtils.excuteNewDb(newSql);
+                oldRs = dbUtils.excuteOldDb(oldSql);
+
+                boolean newExist = false;
+                boolean oldExist = false;
+
+                if (newRs != null) {
+                    newExist = newRs.next();
+                }
+                if (oldRs != null) {
+                    oldExist = oldRs.next();
+                }
 		
-		while (newRs != null || oldRs != null) {
+		while (newExist || oldExist) {
+
+                        newKeyValues.setLength(0);
+                        oldKeyValues.setLength(0);
+
+
 			if (newRs != null) {
 				for (String newKeyColumn : mergeTableInfo.getNewTableKeyColumnList()) {
 					newKeyValues.append(",");
@@ -114,26 +126,26 @@ public class MergeThread extends Thread {
 			}
 			
 			if (new String(newKeyValues).compareTo(new String(oldKeyValues)) > 0) {
-				outputOldOnly(oldRs);
-				oldKeyValues = new StringBuilder();
-				oldRs.next();
+				synchronized (lock) {outputOldOnly(oldRs);}
+				
+				oldExist = oldRs.next();
 			} else if (new String(newKeyValues).compareTo(new String(oldKeyValues)) < 0) {
-				outputNewOnly(newRs);
-				newKeyValues = new StringBuilder();
-				newRs.next();
+				synchronized (lock) {outputNewOnly(newRs);}
+
+				newExist = newRs.next();
 			} else {
 				for (int i=0;i<mergeTableInfo.getNewTableMergeColumnList().size();i++) {
 					newColumnValue = newRs.getString(mergeTableInfo.getNewTableMergeColumnList().get(i));
 					oldColumnValue = newRs.getString(mergeTableInfo.getOldTableMergeColumnList().get(i));
 					
 					if (notEqual(newColumnValue, oldColumnValue)) {
-						outputDiffColumn(newRs,mergeTableInfo.getNewTableMergeColumnList().get(i),newColumnValue,mergeTableInfo.getOldTableMergeColumnList().get(i),oldColumnValue);
+						synchronized(lock){outputDiffColumn(newRs,mergeTableInfo.getNewTableMergeColumnList().get(i),newColumnValue,mergeTableInfo.getOldTableMergeColumnList().get(i),oldColumnValue);}
 					}
 					
-					newKeyValues = new StringBuilder();
-					newRs.next();
-					oldKeyValues = new StringBuilder();
-					oldRs.next();
+					
+					newExist = newRs.next();
+					
+					oldExist = oldRs.next();
 				}
 			}
 		}
