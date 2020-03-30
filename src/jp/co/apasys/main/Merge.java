@@ -13,21 +13,14 @@ import jp.co.apasys.utils.LoggerUtil;
 
 public class Merge implements Runnable {
 	
-	private static String outputDir = "./output";
+	private static String outputDir = "./output/";
 	
-	private Integer mainThreadCount = 10;
+
 	private Integer mergeThreadCount = 10;
 	private LoggerUtil loggerUtil = null;
 	private MergeTableCollector mergeTableCollector = null;
 
 	public Merge() {
-	}
-	
-	public Integer getMainThreadCount() {
-		return mainThreadCount;
-	}
-	public void setMainThreadCount(Integer mainThreadCount) {
-		this.mainThreadCount = mainThreadCount;
 	}
 	public Integer getMergeThreadCount() {
 		return mergeThreadCount;
@@ -53,7 +46,7 @@ public class Merge implements Runnable {
 		CopyOnWriteArraySet<MergeThread> threadSet = new CopyOnWriteArraySet<MergeThread>();
 		String mergeTableFile = "";
 		MergeThread mergeThread = null;
-		DBUtils dbUtils = null;
+		
 		MergeTableInfo mergeTableInfo = null;
 		
 		while (MergeTableCollector.hasNext()) {
@@ -62,17 +55,17 @@ public class Merge implements Runnable {
 				mergeTableFile = MergeTableCollector.next();
 			    mergeTableInfo = MergeTable.getMergeTableInfo(mergeTableFile);
 			    
-				BufferedWriter newOnlyBufferedWriter = new BufferedWriter(new FileWriter(new File(outputDir + File.separator + mergeTableInfo.getNewTableNameString() + "_newOnly.txt")));
+				BufferedOutputSream newOnlyOutBuffer = new BufferedOutputStream(new FileOutputStream(outputDir+ mergeTableInfo.getNewTableNameString() + "_newOnly.txt"));
 				BufferedWriter oldOnlyBufferedWriter = new BufferedWriter(new FileWriter(new File(outputDir + File.separator + mergeTableInfo.getNewTableNameString() + "_oldOnly.txt")));
 				BufferedWriter diffColumnBufferedWriter = new BufferedWriter(new FileWriter(new File(outputDir + File.separator + mergeTableInfo.getNewTableNameString() + "_diffColumn.txt")));
 				
 				for(int i=1;i<=mergeThreadCount;i++) {
-					dbUtils = new DBUtils();
+					
 					mergeThread = new MergeThread();
 					mergeThread.setLoggerUtil(loggerUtil);
-					mergeThread.setDbUtils(dbUtils);
+					
 					mergeThread.setMergeTableInfo(mergeTableInfo);
-					mergeThread.setMaxBucket(mainThreadCount);
+					mergeThread.setMaxBucket(mergeThreadCount);
 					mergeThread.setHashValue(i);
 					mergeThread.setNewOnlyBufferedWriter(newOnlyBufferedWriter);
 					mergeThread.setOldOnlyBufferedWriter(oldOnlyBufferedWriter);
@@ -82,41 +75,34 @@ public class Merge implements Runnable {
 					
 					threadSet.add(mergeThread);
 				}
+
+
+                                // read next table file after all subThread is finished
+			        waitForMergeThreadFinished(threadSet);
+
 			} catch (Exception e) {
 				loggerUtil.error(mergeTableFile, e);
 			}
 			
-			// read next table file after all subThread is finished
-			waitForMergeThreadFinished(threadSet);
-			
 		}
-		
-		// progrem is over after all subThread is finished
-		waitForMergeThreadFinished(threadSet);
 		
 	}
 	
 	private void waitForMergeThreadFinished(CopyOnWriteArraySet<MergeThread> threadSet) {
-		while (true) {
-			boolean finishFlag = true;
+		while (!threadSet.isEmpty()) {
 			for (MergeThread mergeThreadItem : threadSet) {
-				if (mergeThreadItem.isAlive()) {
-					finishFlag = false;
-					break;
-				} else {
+				if (!mergeThreadItem.isAlive()) {
+
 					threadSet.remove(mergeThreadItem);
 				}
 			}
 			
-			if (finishFlag) {
-				break;
-			} else {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
+		
 		}
 	}
 
