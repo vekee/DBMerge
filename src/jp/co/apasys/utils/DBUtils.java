@@ -26,6 +26,7 @@ public class DBUtils {
 	private Connection newConn = null;
 	private Statement newStmt = null;
 	private ResultSet newRs = null;
+        private DatabaseMetaData= null;
 	
 	private Connection oldConn = null;
 	private Statement oldStmt = null;
@@ -38,6 +39,12 @@ public class DBUtils {
 		newConn = DriverManager.getConnection(properties.getProperty(newDbUrl),
 				properties.getProperty(newDbUsername),
 				properties.getProperty(newDbPassword));
+
+                this.newMetadata = this.newConn.getMetaData();
+                this.newStmt = this.newConn.createStatement();
+                this.newStmt.setFetchSize(1000);
+
+
 		Class.forName(properties.getProperty(oldDbDriver));
 		oldConn = DriverManager.getConnection(properties.getProperty(oldDbUrl),
 				properties.getProperty(oldDbUsername),
@@ -47,8 +54,6 @@ public class DBUtils {
 	
 	public ResultSet excuteNewDb(String sql) {
 		try {
-			newStmt = newConn.createStatement();
-			newStmt.setFetchSize(1000);
 			newRs = newStmt.executeQuery(sql);
 		} catch (SQLException e) {
 			newRs = null;
@@ -60,8 +65,6 @@ public class DBUtils {
 	
 	public ResultSet excuteOldDb(String sql) {
 		try {
-			oldStmt = oldConn.createStatement();
-			oldStmt.setFetchSize(1000);
 			oldRs = oldStmt.executeQuery(sql);
 		} catch (SQLException e) {
 			oldRs = null;
