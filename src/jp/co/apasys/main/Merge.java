@@ -48,8 +48,10 @@ public class Merge implements Runnable {
 	CopyOnWriteArraySet<MergeThread> threadSet = new CopyOnWriteArraySet<MergeThread>();
 	String mergeTableFile = "";
 	MergeThread mergeThread = null;
-
 	MergeTableInfo mergeTableInfo = null;
+	BufferedOutputStream newOnlyOutBuffer = null;
+	BufferedOutputStream oldOnlyOutBuffer = null;
+	BufferedOutputStream diffColumnOutBuffer = null;
 
 	while (MergeTableCollector.hasNext()) {
 
@@ -57,15 +59,15 @@ public class Merge implements Runnable {
 		mergeTableFile = MergeTableCollector.next();
 		mergeTableInfo = MergeTable.getMergeTableInfo(mergeTableFile);
 
-		BufferedOutputStream newOnlyOutBuffer = new BufferedOutputStream(
+		newOnlyOutBuffer = new BufferedOutputStream(
 			new FileOutputStream(outputDir
 				+ mergeTableInfo.getNewTableNameString()
 				+ "_newOnly.txt"));
-		BufferedOutputStream oldOnlyOutBuffer = new BufferedOutputStream(
+		oldOnlyOutBuffer = new BufferedOutputStream(
 			new FileOutputStream(outputDir
 				+ mergeTableInfo.getNewTableNameString()
 				+ "_oldOnly.txt"));
-		BufferedOutputStream diffColumnOutBuffer = new BufferedOutputStream(
+		diffColumnOutBuffer = new BufferedOutputStream(
 			new FileOutputStream(outputDir
 				+ mergeTableInfo.getNewTableNameString()
 				+ "_diffColumn.txt"));
@@ -92,28 +94,36 @@ public class Merge implements Runnable {
 
 	    } catch (Exception e) {
 		loggerUtil.error(mergeTableFile, e);
+	    } finally {
+		try {
+        		if (newOnlyOutBuffer != null) {
+        		    newOnlyOutBuffer.flush();
+        		    newOnlyOutBuffer.close();
+        		}
+        		if (newOnlyOutBuffer != null) {
+        		    newOnlyOutBuffer.flush();
+        		    newOnlyOutBuffer.close();
+        		}
+        		if (newOnlyOutBuffer != null) {
+        		    newOnlyOutBuffer.flush();
+        		    newOnlyOutBuffer.close();
+        		}
+		} catch (Exception e) {
+		    loggerUtil.error("failed at closing merge result file", e);
+		}
 	    }
-
 	}
-
     }
 
     private void waitForMergeThreadFinished(
-	    CopyOnWriteArraySet<MergeThread> threadSet) {
+	    CopyOnWriteArraySet<MergeThread> threadSet) throws InterruptedException {
 	while (!threadSet.isEmpty()) {
 	    for (MergeThread mergeThreadItem : threadSet) {
 		if (!mergeThreadItem.isAlive()) {
-
 		    threadSet.remove(mergeThreadItem);
 		}
 	    }
-
-	    try {
-		Thread.sleep(1000);
-	    } catch (InterruptedException e) {
-		e.printStackTrace();
-	    }
-
+	    Thread.sleep(1000);
 	}
     }
 

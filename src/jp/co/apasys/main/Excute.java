@@ -8,11 +8,12 @@ import jp.co.apasys.utils.LoggerUtil;
 
 public class Excute {
 
-    private static String outputBaseFileDirString = "./output/";
+    private static String outputDir = "./output/";
+    private static String logFile = "./output/Merge.log";
 
     public static void main(String[] args) throws IOException {
 
-	FileUtils.backupResult(outputBaseFileDirString);
+	FileUtils.backupResult(outputDir);
 
 	Integer mainThreadCount = 10;
 	Integer mergeThreadCount = 10;
@@ -25,7 +26,7 @@ public class Excute {
 	}
 
 	Merge merge = null;
-	LoggerUtil loggerUtil = new LoggerUtil();
+	LoggerUtil loggerUtil = new LoggerUtil(logFile);
 	MergeTableCollector mergeTableCollector = new MergeTableCollector();
 
 	for (int i = 0; i < mainThreadCount; i++) {

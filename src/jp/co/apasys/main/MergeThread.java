@@ -144,17 +144,11 @@ public class MergeThread extends Thread {
 
 	    // the small key will read next
 	    if (compare(new String(newKeyValues), new String(oldKeyValues)) > 0) {
-		synchronized (lock) {
-		    outputOldOnly(oldRs);
-		}
-
+		outputOldOnly(oldRs);
 		oldExist = oldRs.next();
 	    } else if (new String(newKeyValues).compareTo(new String(
 		    oldKeyValues)) < 0) {
-		synchronized (lock) {
-		    outputNewOnly(newRs);
-		}
-
+		outputNewOnly(newRs);
 		newExist = newRs.next();
 	    } else {
 		for (int i = 0; i < mergeTableInfo.getNewTableMergeColumnList()
@@ -165,23 +159,21 @@ public class MergeThread extends Thread {
 			    .getOldTableMergeColumnList().get(i));
 
 		    if (notEqual(newColumnValue, oldColumnValue)) {
-			synchronized (lock) {
 			    outputDiffColumn(newRs, mergeTableInfo
 				    .getNewTableMergeColumnList().get(i),
 				    newColumnValue, mergeTableInfo
 					    .getOldTableMergeColumnList()
 					    .get(i), oldColumnValue);
-			}
 		    }
 
 		    newExist = newRs.next();
-
 		    oldExist = oldRs.next();
 		}
 	    }
 	}
-	oldRs = dbUtils.excuteNewDb(oldSql);
-
+	
+	// close db conn
+	dbUtils.closeConn();
     }
 
     private void outputNewOnly(ResultSet newRs) throws SQLException,
@@ -195,9 +187,14 @@ public class MergeThread extends Thread {
 	    stringBuilder.append(newRs.getString(newKeyColumn));
 	}
 	stringBuilder.append("]");
-
-	newOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
-		.getBytes(StandardCharsets.UTF_8));
+	
+	synchronized (lock) {
+        	newOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
+        		.getBytes(StandardCharsets.UTF_8));
+        	if (newRs.getRow() % 1000 == 0) {
+        	    newOnlyOutBuffer.flush();
+        	}
+	}
     }
 
     private void outputOldOnly(ResultSet oldRs) throws SQLException,
@@ -211,9 +208,13 @@ public class MergeThread extends Thread {
 	    stringBuilder.append(oldRs.getString(oldKeyColumn));
 	}
 	stringBuilder.append("]");
-
-	oldOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
-		.getBytes(StandardCharsets.UTF_8));
+	synchronized (lock) {
+        	oldOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
+        		.getBytes(StandardCharsets.UTF_8));
+        	if (oldRs.getRow() % 1000 == 0) {
+        	    oldOnlyOutBuffer.flush();
+        	}
+	}
     }
 
     private void outputDiffColumn(ResultSet newRs, String newColumn,
@@ -237,8 +238,13 @@ public class MergeThread extends Thread {
 	stringBuilder.append(oldColumnValue);
 	stringBuilder.append("]");
 
-	diffColumnOutBuffer.write(new String(stringBuilder).replaceFirst(",",
-		"").getBytes(StandardCharsets.UTF_8));
+	synchronized (lock) {
+        	diffColumnOutBuffer.write(new String(stringBuilder).replaceFirst(",",
+        		"").getBytes(StandardCharsets.UTF_8));
+        	if (newRs.getRow() % 1000 == 0) {
+        	    diffColumnOutBuffer.flush();
+        	}
+	}
     }
 
     private boolean equal(String newStr, String oldStr) {

@@ -31,6 +31,9 @@ public class MergeSQL {
 	sqlBuilder.append(" ) = ");
 	sqlBuilder.append(hashValue);
 	sqlBuilder.append(mergeTableInfo.getNewTableMergeFilter());
+	sqlBuilder.append(" ORDER BY ");
+	sqlBuilder.append(mergeTableInfo.getNewTableKeyColumn());
+	
 	return new String(sqlBuilder);
     }
 
@@ -53,6 +56,9 @@ public class MergeSQL {
 	sqlBuilder.append(" ) = ");
 	sqlBuilder.append(hashValue);
 	sqlBuilder.append(mergeTableInfo.getOldTableMergeFilter());
+	sqlBuilder.append(" ORDER BY ");
+	sqlBuilder.append(mergeTableInfo.getOldTableKeyColumn());
+	
 	return new String(sqlBuilder);
     }
 

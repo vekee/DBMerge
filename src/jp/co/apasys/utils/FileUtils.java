@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class FileUtils {
+    
     public static List<String> readFileAllLines(String inputFileDir)
 	    throws IOException {
 	Path path = Paths.get(inputFileDir, new String[0]);
@@ -21,9 +22,9 @@ public class FileUtils {
 	return lines;
     }
 
-    public static Properties get(String inputFileDir) throws IOException {
+    public static Properties getProperties(String path) throws IOException {
 	Properties properties = new Properties();
-	InputStream instream = new FileInputStream(inputFileDir);
+	InputStream instream = new FileInputStream(path);
 	properties.load(instream);
 	return properties;
     }

@@ -13,7 +13,17 @@ public class LoggerUtil {
     Logger logger = null;
 
     public LoggerUtil() {
-	logger = Logger.getLogger(LoggerUtil.class.getName());
+	try {
+	    intiLoger();
+	} catch (SecurityException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+    
+    public LoggerUtil(String logFile) {
+	LoggerUtil.logFile = logFile;
 	try {
 	    intiLoger();
 	} catch (SecurityException e) {
@@ -23,8 +33,9 @@ public class LoggerUtil {
 	}
     }
 
-    public LoggerUtil(String className) throws SecurityException, IOException {
-	logger = Logger.getLogger(className);
+    public LoggerUtil(String logFile, String className) {
+	LoggerUtil.logFile = logFile;
+	this.logger = Logger.getLogger(className);
 	try {
 	    intiLoger();
 	} catch (SecurityException e) {
@@ -35,7 +46,7 @@ public class LoggerUtil {
     }
 
     private void intiLoger() throws SecurityException, IOException {
-	FileHandler fHandler = new FileHandler(logFile, true);
+	FileHandler fHandler = new FileHandler(LoggerUtil.logFile, true);
 	fHandler.setFormatter(new SimpleFormatter());
 	logger.addHandler(fHandler);
     }

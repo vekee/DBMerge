@@ -18,21 +18,27 @@ public class DBUtils {
     private static String newDbUrl = "new.db.url";
     private static String newDbUsername = "new.db.username";
     private static String newDbPassword = "new.db.password";
+
     private static String oldDbDriver = "old.db.driver";
     private static String oldDbUrl = "old.db.url";
     private static String oldDbUsername = "old.db.username";
     private static String oldDbPassword = "old.db.password";
 
+    private static String newCreateSchemaName = "new.create.schema.name";
+    private static String newCreateTableName = "new.create.table.name";
+    private static String oldCreateSchemaName = "old.create.schema.name";
+    private static String oldCreateTableName = "old.create.table.name";
+
     private Properties properties = new Properties();
     private Connection newConn = null;
     private Statement newStmt = null;
     private ResultSet newRs = null;
-    public DatabaseMetaData newMetadata = null;
+    private DatabaseMetaData newMetadata = null;
 
     private Connection oldConn = null;
     private Statement oldStmt = null;
     private ResultSet oldRs = null;
-    public DatabaseMetaData oldMetadata = null;
+    private DatabaseMetaData oldMetadata = null;
 
     public void initDBConn() throws FileNotFoundException, IOException,
 	    ClassNotFoundException, SQLException {
@@ -82,6 +88,20 @@ public class DBUtils {
 	return oldRs;
     }
 
+    public ResultSet getNewDBTables() throws SQLException {
+	return this.newMetadata.getTables(null, 
+		properties.getProperty(newCreateSchemaName), 
+		properties.getProperty(newCreateTableName), 
+		new String[]{"TABLE_NAME"});
+    }
+
+    public ResultSet getOldDBTables() throws SQLException {
+	return this.oldMetadata.getTables(null, 
+		properties.getProperty(oldCreateSchemaName), 
+		properties.getProperty(oldCreateTableName), 
+		new String[]{"TABLE_NAME"});
+    }
+
     public void closeConn() throws SQLException {
 	if (newRs != null) {
 	    newRs.close();
@@ -102,5 +122,21 @@ public class DBUtils {
 	if (oldConn != null) {
 	    oldConn.close();
 	}
+    }
+    
+    public DatabaseMetaData getNewMetadata() {
+        return newMetadata;
+    }
+
+    public void setNewMetadata(DatabaseMetaData newMetadata) {
+        this.newMetadata = newMetadata;
+    }
+
+    public DatabaseMetaData getOldMetadata() {
+        return oldMetadata;
+    }
+
+    public void setOldMetadata(DatabaseMetaData oldMetadata) {
+        this.oldMetadata = oldMetadata;
     }
 }
