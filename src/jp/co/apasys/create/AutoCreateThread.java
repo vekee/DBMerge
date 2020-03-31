@@ -52,7 +52,7 @@ public class AutoCreateThread extends Thread {
 	dbUtils.initDBConn();
 
 	// get table columns from new db 
-	newRs = dbUtils.getNewMetadata().getColumns(null, null, this.tableName, null);
+	newRs = dbUtils.getNewMetadata().getColumns(null, dbUtils.getNewCreateSchemaName(), this.tableName, null);
 	if (newRs != null) {
 	    while (newRs.next()) {
 		newColumns.append(",");
@@ -63,7 +63,7 @@ public class AutoCreateThread extends Thread {
 	}
 	
 	// get table columns from old db 
-	oldRs = dbUtils.getOldMetadata().getColumns(null, null, this.tableName, null);
+	oldRs = dbUtils.getOldMetadata().getColumns(null, dbUtils.getOldCreateSchemaName(), this.tableName, null);
 	if (oldRs != null) {
 	    while (oldRs.next()) {
 		oldColumns.append(",");
