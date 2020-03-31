@@ -23,58 +23,25 @@ public class MergeThread extends Thread {
     private BufferedOutputStream oldOnlyOutBuffer = null;
     private BufferedOutputStream diffColumnOutBuffer = null;
 
-    public Integer getMaxBucket() {
-	return maxBucket;
-    }
-
+  
     public void setMaxBucket(Integer maxBucket) {
-	this.maxBucket = maxBucket;
+	this.maxBucket = maxBucket - 1;
     }
-
-    public Integer getHashValue() {
-	return hashValue;
-    }
-
     public void setHashValue(Integer hashValue) {
-	this.hashValue = hashValue;
+	this.hashValue = hashValue - 1;
     }
-
-    public MergeTableInfo getMergeTableInfo() {
-	return mergeTableInfo;
-    }
-
     public void setMergeTableInfo(MergeTableInfo mergeTableInfo) {
 	this.mergeTableInfo = mergeTableInfo;
     }
-
-    public LoggerUtil getLoggerUtil() {
-	return loggerUtil;
-    }
-
     public void setLoggerUtil(LoggerUtil loggerUtil) {
 	this.loggerUtil = loggerUtil;
     }
-
-    public BufferedOutputStream getNewOnlyOutBuffer() {
-	return newOnlyOutBuffer;
-    }
-
     public void setNewOnlyOutBuffer(BufferedOutputStream newOnlyOutBuffer) {
 	this.newOnlyOutBuffer = newOnlyOutBuffer;
     }
-
-    public BufferedOutputStream getOldOnlyOutBuffer() {
-	return oldOnlyOutBuffer;
-    }
-
     public void setOldOnlyOutBuffer(BufferedOutputStream oldOnlyOutBuffer) {
 	this.oldOnlyOutBuffer = oldOnlyOutBuffer;
     }
-
-    public BufferedOutputStream getDiffColumnOutBuffer() {
-	return diffColumnOutBuffer;
-    }
-
     public void setDiffColumnOutBuffer(BufferedOutputStream diffColumnOutBuffer) {
 	this.diffColumnOutBuffer = diffColumnOutBuffer;
     }
@@ -171,9 +138,19 @@ public class MergeThread extends Thread {
 		}
 	    }
 	}
+
+       synchronized (lock) {
+           newOnlyOutBuffer.flush();
+           oldOnlyOutBuffer.flush();
+           diffColumnOutBuffer.flush();
+       }
 	
 	// close db conn
 	dbUtils.closeConn();
+        newRs.close();
+        newRs = null;
+        oldRs.close();
+        oldRs = null;
     }
 
     private void outputNewOnly(ResultSet newRs) throws SQLException,
@@ -191,7 +168,8 @@ public class MergeThread extends Thread {
 	synchronized (lock) {
         	newOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
         		.getBytes(StandardCharsets.UTF_8));
-        	if (newRs.getRow() % 1000 == 0) {
+                newOlyOutBuffer.write(System.getProperty("lines.separator").getBytes());
+        	if (newRs.getRow() % 3000 == 0) {
         	    newOnlyOutBuffer.flush();
         	}
 	}
@@ -204,14 +182,15 @@ public class MergeThread extends Thread {
 	    stringBuilder.append(",");
 	    stringBuilder.append(oldKeyColumn);
 	    stringBuilder.append("=");
-	    ;
+	  
 	    stringBuilder.append(oldRs.getString(oldKeyColumn));
 	}
 	stringBuilder.append("]");
 	synchronized (lock) {
         	oldOnlyOutBuffer.write(new String(stringBuilder).replaceFirst(",", "")
         		.getBytes(StandardCharsets.UTF_8));
-        	if (oldRs.getRow() % 1000 == 0) {
+
+        	if (oldRs.getRow() % 3000 == 0) {
         	    oldOnlyOutBuffer.flush();
         	}
 	}
@@ -241,7 +220,8 @@ public class MergeThread extends Thread {
 	synchronized (lock) {
         	diffColumnOutBuffer.write(new String(stringBuilder).replaceFirst(",",
         		"").getBytes(StandardCharsets.UTF_8));
-        	if (newRs.getRow() % 1000 == 0) {
+
+        	if (newRs.getRow() % 300 == 0) {
         	    diffColumnOutBuffer.flush();
         	}
 	}
