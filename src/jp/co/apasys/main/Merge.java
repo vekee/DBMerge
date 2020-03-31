@@ -20,26 +20,12 @@ public class Merge implements Runnable {
     public Merge() {
     }
 
-    public Integer getMergeThreadCount() {
-	return mergeThreadCount;
-    }
-
     public void setMergeThreadCount(Integer mergeThreadCount) {
 	this.mergeThreadCount = mergeThreadCount;
     }
-
-    public LoggerUtil getLoggerUtil() {
-	return loggerUtil;
-    }
-
     public void setLoggerUtil(LoggerUtil loggerUtil) {
 	this.loggerUtil = loggerUtil;
     }
-
-    public MergeTableCollector getMergeTableCollector() {
-	return mergeTableCollector;
-    }
-
     public void setMergeTableCollector(MergeTableCollector mergeTableCollector) {
 	this.mergeTableCollector = mergeTableCollector;
     }
@@ -65,7 +51,7 @@ public class Merge implements Runnable {
 				+ "_newOnly.txt"));
 		oldOnlyOutBuffer = new BufferedOutputStream(
 			new FileOutputStream(outputDir
-				+ mergeTableInfo.getNewTableNameString()
+				+ mergeTableInfo.getOldTableNameString()
 				+ "_oldOnly.txt"));
 		diffColumnOutBuffer = new BufferedOutputStream(
 			new FileOutputStream(outputDir
@@ -94,23 +80,6 @@ public class Merge implements Runnable {
 
 	    } catch (Exception e) {
 		loggerUtil.error(mergeTableFile, e);
-	    } finally {
-		try {
-        		if (newOnlyOutBuffer != null) {
-        		    newOnlyOutBuffer.flush();
-        		    newOnlyOutBuffer.close();
-        		}
-        		if (newOnlyOutBuffer != null) {
-        		    newOnlyOutBuffer.flush();
-        		    newOnlyOutBuffer.close();
-        		}
-        		if (newOnlyOutBuffer != null) {
-        		    newOnlyOutBuffer.flush();
-        		    newOnlyOutBuffer.close();
-        		}
-		} catch (Exception e) {
-		    loggerUtil.error("failed at closing merge result file", e);
-		}
 	    }
 	}
     }
