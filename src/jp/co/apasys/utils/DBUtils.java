@@ -25,9 +25,8 @@ public class DBUtils {
     private static String oldDbPassword = "old.db.password";
 
     private static String newCreateSchemaName = "new.create.schema.name";
-    private static String newCreateTableName = "new.create.table.name";
     private static String oldCreateSchemaName = "old.create.schema.name";
-    private static String oldCreateTableName = "old.create.table.name";
+    private static String commCreateTableName = "comm.create.table.name";
 
     private Properties properties = new Properties();
     private Connection newConn = null;
@@ -139,4 +138,18 @@ public class DBUtils {
     public void setOldMetadata(DatabaseMetaData oldMetadata) {
         this.oldMetadata = oldMetadata;
     }
+
+    public String getNewCreateSchemaName() {
+        return properties.getProperty(this.newCreateSchemaName);
+    }
+
+    public String getOldCreateSchemaName() {
+        return properties.getProperty(this.oldCreateSchemaName);
+    }
+
+    public String getCommCreateTableName() {
+        return properties.getProperty(this.commCreateTableName);
+    }
+
+
 }
