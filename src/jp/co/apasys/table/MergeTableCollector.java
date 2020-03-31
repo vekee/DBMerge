@@ -8,8 +8,8 @@ import java.util.List;
 import jp.co.apasys.utils.FileUtils;
 
 public class MergeTableCollector {
-    private static String outputBaseFileDirString = "./config";
-    static Iterator<String> tableIterator = null;
+    private static String outputBaseFileDirString = "./config/merge.properties";
+    private static Iterator<String> tableIterator = null;
 
     public MergeTableCollector() {
 	readMergeTable();
