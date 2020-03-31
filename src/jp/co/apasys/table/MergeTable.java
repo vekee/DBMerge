@@ -1,6 +1,5 @@
 package jp.co.apasys.table;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import jp.co.apasys.model.MergeTableInfo;
 
 public class MergeTable {
 
-    private static String outputBaseFileDirString = "./tables/";
+    private static String tablePropertiesPath = "./tables/";
 
     private static String newTableNameString = "new.table.name";
     private static String newTableKeyColumn = "new.table.key.column";
@@ -34,7 +33,7 @@ public class MergeTable {
 
 	MergeTableInfo mergeTableInfo = new MergeTableInfo();
 	Properties properties = new Properties();
-	properties.load(new FileInputStream(outputBaseFileDirString
+	properties.load(new FileInputStream(tablePropertiesPath
 		+ mergeTableFile));
 
 	mergeTableInfo.setNewTableNameString(properties

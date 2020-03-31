@@ -48,11 +48,11 @@ public class AutoCreateThread extends Thread {
 	StringBuilder newColumns = new StringBuilder();
 	StringBuilder oldColumns = new StringBuilder();
 
-	DBUtils dbUtils = new DBUtils();
+	DBUtils dbUtils = new DBUtils(loggerUtil);
 	dbUtils.initDBConn();
 
 	// get table columns from new db 
-	newRs = dbUtils.getNewMetadata().getColumns(null, dbUtils.getNewCreateSchemaName(), this.tableName, null);
+	newRs = dbUtils.getNewColumns(null, dbUtils.jdbc.getNewCreateSchemaName(), this.tableName, null);
 	if (newRs != null) {
 	    while (newRs.next()) {
 		newColumns.append(",");
@@ -63,7 +63,7 @@ public class AutoCreateThread extends Thread {
 	}
 	
 	// get table columns from old db 
-	oldRs = dbUtils.getOldMetadata().getColumns(null, dbUtils.getOldCreateSchemaName(), this.tableName, null);
+	oldRs = dbUtils.getOldColumns(null, dbUtils.jdbc.getOldCreateSchemaName(), this.tableName, null);
 	if (oldRs != null) {
 	    while (oldRs.next()) {
 		oldColumns.append(",");
@@ -74,7 +74,7 @@ public class AutoCreateThread extends Thread {
 	}
 	
 	// get table keys from new db 
-	newRs = dbUtils.getNewMetadata().getPrimaryKeys(null, null, this.tableName);
+	newRs = dbUtils.getNewPrimaryKeys(null, null, this.tableName);
 	if (newRs != null) {
 	    while (newRs.next()) {
 		newKeys.append(",");
@@ -85,7 +85,7 @@ public class AutoCreateThread extends Thread {
 	}
 	
 	// get table keys from old db 
-	oldRs = dbUtils.getOldMetadata().getPrimaryKeys(null, null, this.tableName);
+	oldRs = dbUtils.getOldPrimaryKeys(null, null, this.tableName);
 	if (oldRs != null) {
 	    while (oldRs.next()) {
 		oldKeys.append(",");
@@ -94,6 +94,9 @@ public class AutoCreateThread extends Thread {
 	    oldRs.close();
 	    oldRs = null;
 	}
+	
+	// close the db connect
+	dbUtils.closeConn();
 	
 	// output table properties
 	outputTableProperties(tableName, 
@@ -114,18 +117,15 @@ public class AutoCreateThread extends Thread {
 	row.append("# merge info of new table ");
 	row.append(System.getProperty("line.separator"));
 	row.append("new.table.name=");
-	row.append(System.getProperty("line.separator"));
 	row.append(tableName);
 	row.append(System.getProperty("line.separator"));
 	row.append("new.table.key.column=");
-	row.append(System.getProperty("line.separator"));
 	row.append(newKeys);
-	row.append("new.table.all.column=");
 	row.append(System.getProperty("line.separator"));
+	row.append("new.table.all.column=");
 	row.append(newColumns);
 	row.append(System.getProperty("line.separator"));
 	row.append("new.table.merge.column=");
-	row.append(System.getProperty("line.separator"));
 	row.append(newColumns);
 	row.append(System.getProperty("line.separator"));
 	row.append("new.table.merge.filter=");
@@ -135,18 +135,15 @@ public class AutoCreateThread extends Thread {
 	row.append("# merge info of old table ");
 	row.append(System.getProperty("line.separator"));
 	row.append("old.table.name=");
-	row.append(System.getProperty("line.separator"));
 	row.append(tableName);
 	row.append(System.getProperty("line.separator"));
 	row.append("old.table.key.column=");
-	row.append(System.getProperty("line.separator"));
 	row.append(oldKeys);
-	row.append("old.table.all.column=");
 	row.append(System.getProperty("line.separator"));
+	row.append("old.table.all.column=");
 	row.append(oldColumns);
 	row.append(System.getProperty("line.separator"));
 	row.append("old.table.merge.column=");
-	row.append(System.getProperty("line.separator"));
 	row.append(oldColumns);
 	row.append(System.getProperty("line.separator"));
 	row.append("old.table.merge.filter=");

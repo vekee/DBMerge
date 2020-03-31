@@ -25,7 +25,7 @@ public class MergeTableCollector {
 		tableIterator = mergeTableFileList.iterator();
 	}
 
-	public static String next() {
+	public String next() {
 		String mergeTableFile = "";
 		if (tableIterator.hasNext()) {
 			mergeTableFile = tableIterator.next();
@@ -34,7 +34,7 @@ public class MergeTableCollector {
 		return mergeTableFile;
 	}
 
-	public static boolean hasNext() {
+	public boolean hasNext() {
 		return tableIterator.hasNext();
 	}
 }

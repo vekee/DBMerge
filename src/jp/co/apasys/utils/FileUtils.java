@@ -44,7 +44,8 @@ public class FileUtils {
 
 	public static void backupResult(String path) throws IOException {
 		File fromFile = new File(path);
-		File toFile = new File(path + "old" + File.separator + DateUtils.getNowDate());
+		String toPathString = path + "old" + File.separator + DateUtils.getNowDate();
+		File toFile = new File(toPathString);
 		if (!toFile.isDirectory()) {
 			toFile.mkdirs();
 		}
@@ -53,7 +54,7 @@ public class FileUtils {
 			File subFile = new File(path + fileName);
 			if (!subFile.isDirectory()) {
 				Path formPath = Paths.get(path + fileName);
-				Path toPath = Paths.get(path + "old" + File.separator + DateUtils.getNowDate() + File.separator + fileName);
+				Path toPath = Paths.get(toPathString + File.separator + fileName);
 				Files.move(formPath, toPath);
 			}
 		}

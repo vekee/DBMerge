@@ -41,10 +41,10 @@ public class Merge implements Runnable {
 		BufferedOutputStream oldOnlyOutBuffer = null;
 		BufferedOutputStream diffColumnOutBuffer = null;
 
-		while (MergeTableCollector.hasNext()) {
+		while (this.mergeTableCollector.hasNext()) {
 
 			try {
-				mergeTableFile = MergeTableCollector.next();
+				mergeTableFile = this.mergeTableCollector.next();
 				mergeTableInfo = MergeTable.getMergeTableInfo(mergeTableFile);
 
 				newOnlyOutBuffer = new BufferedOutputStream(
