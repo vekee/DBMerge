@@ -33,9 +33,9 @@ public class FileUtils {
 	File rootFile = new File(path);
 	String[] fileList = rootFile.list();
 	for (int i = 0; i < fileList.length; i++) {
-	    File subFile = new File(path + File.separator + fileList[i]);
+	    File subFile = new File(path + fileList[i]);
 	    if (subFile.isDirectory()) {
-		clearResut(path + File.separator + fileList[i]);
+		clearResut(path + fileList[i]);
 	    } else {
 		subFile.delete();
 	    }
@@ -45,16 +45,18 @@ public class FileUtils {
 
     public static void backupResult(String path) throws IOException {
 	File fromFile = new File(path);
-	File toFile = new File(path + File.separator + "old");
+	File toFile = new File(path + "old");
 	if (!toFile.isDirectory()) {
 	    toFile.mkdirs();
 	}
 
 	for (String fileName : fromFile.list()) {
-	    File subFile = new File(path + File.separator + fileName);
+	    File subFile = new File(path + fileName);
 	    if (!subFile.isDirectory()) {
-		Path formPath = Paths.get(path + File.separator + fileName);
-		Path toPath = Paths.get(path + File.separator + "old"
+		Path formPath = Paths.get(path + fileName);
+		Path toPath = Paths.get(path 
+                        + "old"
+                        + File.separator
 			+ fileName);
 		Files.move(formPath, toPath);
 	    }
