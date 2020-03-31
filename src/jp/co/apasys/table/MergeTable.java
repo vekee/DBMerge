@@ -12,7 +12,7 @@ import jp.co.apasys.model.MergeTableInfo;
 
 public class MergeTable {
 
-    private static String outputBaseFileDirString = "./tables";
+    private static String outputBaseFileDirString = "./tables/";
 
     private static String newTableNameString = "new.table.name";
     private static String newTableKeyColumn = "new.table.key.column";
@@ -35,7 +35,7 @@ public class MergeTable {
 	MergeTableInfo mergeTableInfo = new MergeTableInfo();
 	Properties properties = new Properties();
 	properties.load(new FileInputStream(outputBaseFileDirString
-		+ File.separator + mergeTableFile));
+		+ mergeTableFile));
 
 	mergeTableInfo.setNewTableNameString(properties
 		.getProperty(newTableNameString));
