@@ -25,10 +25,10 @@ public class MergeThread extends Thread {
 
   
     public void setMaxBucket(Integer maxBucket) {
-	this.maxBucket = maxBucket - 1;
+	this.maxBucket = maxBucket;
     }
     public void setHashValue(Integer hashValue) {
-	this.hashValue = hashValue - 1;
+	this.hashValue = hashValue;
     }
     public void setMergeTableInfo(MergeTableInfo mergeTableInfo) {
 	this.mergeTableInfo = mergeTableInfo;
