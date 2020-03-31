@@ -6,11 +6,11 @@ import java.util.Date;
 
 public class DateUtils {
 
-    public static String getNowDate() {
-	Calendar calendar = Calendar.getInstance();
-	Date date = calendar.getTime();
-	SimpleDateFormat sdformat = new SimpleDateFormat();
-	return sdformat.format(date);
-    }
+	public static String getNowDate() {
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat sdformat = new SimpleDateFormat("yyyyMMddHHmmss");
+		return sdformat.format(date);
+	}
 
 }

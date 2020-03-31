@@ -29,7 +29,7 @@ public class MergeTable {
 
     }
 
-    public static MergeTableInfo getMergeTableInfo(String mergeTableFile)
+	public static MergeTableInfo getMergeTableInfo(String mergeTableFile)
 	    throws FileNotFoundException, IOException {
 
 	MergeTableInfo mergeTableInfo = new MergeTableInfo();

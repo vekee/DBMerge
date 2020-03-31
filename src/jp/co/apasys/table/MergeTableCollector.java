@@ -8,34 +8,33 @@ import java.util.List;
 import jp.co.apasys.utils.FileUtils;
 
 public class MergeTableCollector {
-    private static String outputBaseFileDirString = "./config/merge.properties";
-    private static Iterator<String> tableIterator = null;
+	private static String outputBaseFileDirString = "./config/merge.properties";
+	private static Iterator<String> tableIterator = null;
 
-    public MergeTableCollector() {
-	readMergeTable();
-    }
-
-    private void readMergeTable() {
-	List<String> mergeTableFileList = new ArrayList<String>();
-	try {
-	    mergeTableFileList = FileUtils
-		    .readFileAllLines(outputBaseFileDirString);
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-	tableIterator = mergeTableFileList.iterator();
-    }
-
-    public static String next() {
-	String mergeTableFile = "";
-	if (tableIterator.hasNext()) {
-	    mergeTableFile = tableIterator.next();
+	public MergeTableCollector() {
+		readMergeTable();
 	}
 
-	return mergeTableFile;
-    }
+	private void readMergeTable() {
+		List<String> mergeTableFileList = new ArrayList<String>();
+		try {
+			mergeTableFileList = FileUtils.readFileAllLines(outputBaseFileDirString);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		tableIterator = mergeTableFileList.iterator();
+	}
 
-    public static boolean hasNext() {
-	return tableIterator.hasNext();
-    }
+	public static String next() {
+		String mergeTableFile = "";
+		if (tableIterator.hasNext()) {
+			mergeTableFile = tableIterator.next();
+		}
+
+		return mergeTableFile;
+	}
+
+	public static boolean hasNext() {
+		return tableIterator.hasNext();
+	}
 }
