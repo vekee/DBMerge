@@ -38,20 +38,20 @@ public class AutoCreate {
 		threadSet.add(autoCreateThread);
 
 		// min and max create thread count is 50~100
-		if (newRs.getRow() % 100 == 0) {
+		if (threadSet.size() > 100) {
 		    waitForCreateTablesThread(threadSet);
 		}
 	    }
 
 	    // to finish after create all table properties file
 	    waitForCreateTablesThreadFinished(threadSet);
-	    loggerUtil.info("finished AutoCreate!");
-
+	 
 	} catch (Exception e) {
 	    loggerUtil.error("エラーが発生しました！", e);
-	} finally {
-
 	}
+	
+        loggerUtil.info("finished AutoCreate!");
+
     }
 
     private static void waitForCreateTablesThreadFinished(
@@ -63,7 +63,7 @@ public class AutoCreate {
 		    threadSet.remove(CreateTablesThreadItem);
 		}
 	    }
-	    Thread.sleep(100);
+	    Thread.sleep(300);
 	}
     }
 
