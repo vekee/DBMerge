@@ -1,3 +1,0 @@
-Mainfest-Version:1.0
-Class-Path:. lib/ojdbc6.jar
-Main-Class:jp.co.apasys.main.execute
