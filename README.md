@@ -19,7 +19,7 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     ・DBMerge.jar  
 
 #### DBMerge-run/config/jdbc.properties  
-    The diff database config file.  
+    Database connect config file.  
     Only support of Oracle database.  
 
     # the new db info
@@ -28,13 +28,13 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     new.db.username=DBM_NEW
     new.db.password=password
 
-    # the new db info
+    # the old db info
     old.db.driver=oracle.jdbc.driver.OracleDriver
     old.db.url=jdbc:oracle:thin:@192.168.99.100:1521:xe
     old.db.username=DBM_OLD
     old.db.password=password
 
-    # only need for create properties of tables
+    # only need to creating table diff config when you use [AutoCreate.jar]
     new.create.schema.name=DBM_NEW
     old.create.schema.name=DBM_OLD
     comm.create.table.name=TABLE%
@@ -55,7 +55,7 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     TABLE1.properties_oldOnly.txt
 
 #### DBMerge-run/lib/ojdbc6-11.2.0.3.jar
-    The JDBC driver of oracle.
+    The JDBC driver of Oracle.
 
 #### DBMerge-run/tables/
     The merge config of tables.
@@ -65,19 +65,20 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     new.table.name=TABLE1
     new.table.key.column=COLUMN1
     new.table.merge.column=COLUMN1,COLUMN2,COLUMN3,COLUMN4,COLUMN5,COLUMN6,COLUMN7,COLUMN8,COLUMN9,COLUMN10,COLUMN11
-    new.table.merge.filter=
+    new.table.merge.filter=AND COLUMN1 = '01'
 
     # merge info of old table 
     old.table.name=TABLE1
     old.table.key.column=COLUMN1
     old.table.merge.column=COLUMN1,COLUMN2,COLUMN3,COLUMN4,COLUMN5,COLUMN6,COLUMN7,COLUMN8,COLUMN9,COLUMN10,COLUMN11
-    old.table.merge.filter=
+    old.table.merge.filter=AND COLUMN1 = '01'
 
 
 #### VS. 
 
 #### Requirement
     ・JAVA1.5 or earlier
+    ・Oracle 10g or earlier
     ・CPU 2.4GHZ at least
     ・MOMERY 4G at least
 
