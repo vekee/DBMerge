@@ -99,7 +99,7 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     5. Create new Pull Request
 
 #### Licence
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
+[MIT](https://github.com/vekee/DBMerge/blob/dev/LICENSE.md)
 
 #### Author
 https://apasys.co.jp/  
