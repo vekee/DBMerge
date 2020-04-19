@@ -73,7 +73,6 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     old.table.merge.column=COLUMN1,COLUMN2,COLUMN3,COLUMN4,COLUMN5,COLUMN6,COLUMN7,COLUMN8,COLUMN9,COLUMN10,COLUMN11
     old.table.merge.filter=AND COLUMN1 = '01'
 
-
 #### VS. 
 
 #### Requirement
@@ -82,15 +81,16 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
     ・CPU 2.4GHZ at least
     ・MOMERY 4G at least
 
+#### Install
+    You need only copy the [DBMerge-run]  on your PC or server.
+    When you modified the sources,you need export the new jar file. 
+
 #### Usage
     You can double click on it for run or use the command  
     java -jar DBMerge.jar  
 
     When you use the command, you can set the mutial thread parameters like this  
     java -jar DBMerge.jar  10 10  
-
-#### Install
-    You need only copy the [DBMerge-run]  on your PC or server
 
 #### Contribution
     1. Fork it ( https://github.com/vekee/DBMerge.git )
