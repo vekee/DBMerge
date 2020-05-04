@@ -1,10 +1,14 @@
 --------------------------------------------------------
---  ファイルを作成しました - 日曜日-4月-05-2020   
+--  DDL for Users
 --------------------------------------------------------
+CREATE USER DBM_NEW IDENTIFIED BY password ;
+grant unlimited tablespace to DBM_NEW;
+grant create session to DBM_NEW;
+grant create table to DBM_NEW;
+
 --------------------------------------------------------
 --  DDL for Table TABLE1
 --------------------------------------------------------
-
   CREATE TABLE "DBM_NEW"."TABLE1" 
    (	"COLUMN1" VARCHAR2(20 BYTE), 
 	"COLUMN2" VARCHAR2(20 BYTE), 
