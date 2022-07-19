@@ -102,5 +102,4 @@ When you rewrite system or upgrade system, it often used by diff new and old bat
 [MIT](https://github.com/vekee/DBMerge/blob/dev/LICENSE.md)
 
 #### Author
-https://apasys.co.jp/  
 DUAN DAHAI  
