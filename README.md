@@ -1,8 +1,8 @@
 # DBMerge
 
 #### Description
-This tool is for diff tables in Oracle database.  
-When you rewrite system or upgrade system, it often used by diff new and old batch results 
+This tool is designed to compare tables in Oracle databases.   
+It is commonly used during system rewrites or upgrades to verify differences between old and new batch processing results.
 
 #### Overview
     ・DBMerge-run - The demo of this DBMerge.You can copy it anywhere to try.  
