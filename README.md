@@ -103,5 +103,4 @@ It is commonly used during system rewrites or upgrades to verify differences bet
 [MIT](https://github.com/vekee/DBMerge/blob/dev/LICENSE.md)
 
 #### Author
-https://apasys.co.jp/  
 DUAN DAHAI  
